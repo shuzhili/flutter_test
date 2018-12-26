@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widgets/gridview.dart';
+import 'dart:convert';
 
 void main() => runApp(MyApp());
 
@@ -16,6 +17,7 @@ class MyAppState extends State<MyApp> {
   List _fruits = ["Apple", "Banana", "Pineapple", "Mango", "Grapes"];
   List<DropdownMenuItem<String>> _dropDownMenuItems;
   String _select_fruit;
+  List data;
 
   @override
   void initState() {
@@ -49,19 +51,43 @@ class MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: new Text("DropDownMenuItems"),
         ),
-        body: new Container(
-          child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new DropdownButton(
-                  value: _select_fruit,
-                  items: _dropDownMenuItems,
-                  onChanged: changeDropDowmItem)
-            ],
-          ),
-        ),
+//        body: new Container(
+//          child: new Column(
+//            crossAxisAlignment: CrossAxisAlignment.stretch,
+//            mainAxisAlignment: MainAxisAlignment.spaceAround,
+//            children: <Widget>[
+//              new DropdownButton(
+//                  value: _select_fruit,
+//                  items: _dropDownMenuItems,
+//                  onChanged: changeDropDowmItem)
+//            ],
+//          ),
+//          decoration: BoxDecoration(
+//            image: DecorationImage(
+//                image: AssetImage("assets/ic_launcher.png"), fit: BoxFit.cover),
+//          ),
+//        ),
 //        body: myGridView.build(),
+        body: new FutureBuilder(
+            future: DefaultAssetBundle.of(context).load("data_repo/dd.json"),
+            builder: (context, snapshot) {
+              var new_data = jsonDecode(snapshot.data.toString());
+              return new ListView.builder(itemBuilder: (context, int index) {
+                return new Card(
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Text(new_data[index]['name']),
+                      Text(new_data[index]['height']),
+                      Text(new_data[index]['mass']),
+                      Text(new_data[index]['hair_color']),
+                      Text(new_data[index]['skin_color']),
+                      Text(new_data[index]['name']),
+                    ],
+                  ),
+                );
+              });
+            }),
       ),
     );
   }
