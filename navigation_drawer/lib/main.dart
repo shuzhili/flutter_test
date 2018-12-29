@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:navigation_drawer/screen/home.dart';
 import 'package:navigation_drawer/screen/settings.dart';
 import 'package:navigation_drawer/screen/account.dart';
+import 'package:navigation_drawer/screen/editText.dart';
+import 'package:navigation_drawer/screen/httpget.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,10 +19,10 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(),
       routes: <String, WidgetBuilder>{
         SettingScreen.routeName: (context) => new SettingScreen(),
-        AccountScreen.routeName:(context) => new AccountScreen(),
+        AccountScreen.routeName: (context) => new AccountScreen(),
+        MyEditText.routeName: (context) => new MyEditText(),
+        MyHttpGet.routeName: (context) => new MyHttpGet(),
       },
     );
   }
 }
-
-

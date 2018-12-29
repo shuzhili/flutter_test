@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:navigation_drawer/screen/account.dart';
 import 'package:navigation_drawer/screen/settings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:navigation_drawer/screen/editText.dart';
+import 'package:navigation_drawer/tab/firstTab.dart';
+import 'package:navigation_drawer/tab/secondTab.dart';
+import 'package:navigation_drawer/tab/thirdTab.dart';
+import 'package:navigation_drawer/screen/httpget.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -11,10 +15,9 @@ class MyHomePage extends StatefulWidget {
   }
 }
 
-class HomePageState extends State<MyHomePage> {
+class HomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   var homePageContent = "Persist key with sp";
-  var counter = 0;
-  var key = "counter";
 
   Drawer getNavDrawer(BuildContext context) {
     var headerChild = new DrawerHeader(child: Text("Header"));
@@ -44,6 +47,8 @@ class HomePageState extends State<MyHomePage> {
       getNavItem(Icons.settings, "Settings", SettingScreen.routeName),
       getNavItem(Icons.home, "Home", "/"),
       getNavItem(Icons.account_box, "Account", AccountScreen.routeName),
+      getNavItem(Icons.edit, "editText", MyEditText.routeName),
+      getNavItem(Icons.http, 'httpget', MyHttpGet.routeName),
       aboutChild,
     ];
     ListView listView = new ListView(children: myNavChildren);
@@ -52,52 +57,12 @@ class HomePageState extends State<MyHomePage> {
     );
   }
 
-  void _loadSaveData() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    setState(() {
-      counter = (sp.getInt(key) ?? 0);
-    });
-  }
+  TabController controller;
 
-  _onIncrement() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    setState(() {
-      counter = (sp.getInt(key) ?? 0) + 1;
-    });
-    sp.setInt(key, counter);
-  }
-
-  _onDecrement() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    setState(() {
-      counter = (sp.get(key) ?? 0) - 1;
-    });
-    sp.setInt(key, counter);
-  }
-
-  Container _getContainer() {
-    return new Container(
-      child: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-              '$counter',
-              textScaleFactor: 10.0,
-            ),
-            new Padding(padding: new EdgeInsets.all(10.0)),
-            new RaisedButton(
-              onPressed: _onIncrement,
-              child: new Text("Increment Counter"),
-            ),
-            new Padding(padding: new EdgeInsets.all(10.0)),
-            new RaisedButton(
-              onPressed: _onDecrement,
-              child: new Text("DecrementHit"),
-            ),
-          ],
-        ),
-      ),
+  TabBarView _getTabView() {
+    return new TabBarView(
+      children: [new FirstTab(), new SecondTab(), new ThirdTab()],
+      controller: controller,
     );
   }
 
@@ -105,7 +70,14 @@ class HomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _loadSaveData();
+    controller = new TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -115,7 +87,24 @@ class HomePageState extends State<MyHomePage> {
       appBar: new AppBar(
         title: new Text("Navigation Drawer Example"),
       ),
-      body: _getContainer(),
+      body: _getTabView(),
+      bottomNavigationBar: new Material(
+        color: Colors.blue,
+        child: new TabBar(
+          tabs: [
+            new Tab(
+              icon: new Icon(Icons.favorite),
+            ),
+            new Tab(
+              icon: new Icon(Icons.adb),
+            ),
+            new Tab(
+              icon: new Icon(Icons.airport_shuttle),
+            )
+          ],
+          controller: controller,
+        ),
+      ),
       drawer: getNavDrawer(context),
     );
   }
